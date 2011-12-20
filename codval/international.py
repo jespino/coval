@@ -1,6 +1,57 @@
 import string
+import re
 
-def iban(iban):
+def isbn(isbn, strict=True):
+    '''Validation of an ISBN (international Standard Book Number)'''
+
+    if not strict:
+        isbn = isbn.upper()
+        if isbn[0:4] == 'ISBN':
+            isbn = isbn[4:]
+        isbn = isbn.strip().replace("-", "").replace("/", "")
+
+    if len(isbn) == 10:
+        return isbn10(isbn)
+    elif len(isbn) == 13:
+        return isbn13(isbn)
+    else:
+        return False
+
+# Extracted from Wikipedia's http://en.wikipedia.org/wiki/Isbn page
+def isbn10(isbn, strict=True):
+    '''Validation of an ISBN (international Standard Book Number) in ISBN-10 format'''
+
+    if not strict:
+        isbn = isbn.upper()
+        if isbn[0:4] == 'ISBN':
+            isbn = isbn[4:]
+        isbn = isbn.strip().replace("-", "").replace("/", "")
+
+    if not re.match('^\d{10}$', isbn):
+        return False
+
+    total = sum([int(num)*weight for num, weight in
+                     zip(isbn, reversed(range(1, 11)))])
+    return total%11==0
+
+# Extracted from Wikipedia's http://en.wikipedia.org/wiki/Isbn page
+def isbn13(isbn, strict=True):
+    '''Validation of an ISBN (international Standard Book Number) in ISBN-13 format'''
+
+    if not strict:
+        isbn = isbn.upper()
+        if isbn[0:4] == 'ISBN':
+            isbn = isbn[4:]
+        isbn = isbn.strip().replace("-", "").replace("/", "")
+
+    if not re.match('^\d{13}$', isbn):
+        return False
+
+    total = sum([int(num)*weight for num, weight in zip(isbn, (1,3)*6)])
+    ck = 10-(total%10)
+    return ck == int(isbn[-1])
+
+def iban(iban, strict=True):
     '''Validation of an IBAN (international bankaccount number)'''
     country_code_length = {
         'AD': 24, 'AE': 23, 'AL': 28, 'AT': 20, 'BA': 20, 'BE': 16, 'BG': 22,
@@ -13,6 +64,9 @@ def iban(iban):
         'TN': 24, 'TR': 26,
     }
     letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+
+    if not strict:
+        iban = iban.strip().replace("-", "").replace("/", "")
 
     iban = iban.upper()
 
@@ -35,9 +89,12 @@ def iban(iban):
     return (int(iban_translated) % 97) == 1
             
 
-def banknote_euro(banknote):
+def banknote_euro(banknote, strict=True):
     '''Validation of a Euro banknote id'''
     euro_country_codes = 'JKLMNPRSTUVWXYZ'
+
+    if not strict:
+        banknote = banknote.strip().replace("-", "").replace("/", "")
     
     if len(banknote) != 12:
         return False
