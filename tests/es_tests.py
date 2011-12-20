@@ -1,5 +1,5 @@
 import unittest
-from codevalidator.es import *
+from codval.es import *
 
 class CodeValidatorEsTestCase(unittest.TestCase):
 

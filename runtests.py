@@ -1,4 +1,4 @@
 import unittest
-from tests.esTests import *
+from tests.es_tests import *
 
 unittest.main()

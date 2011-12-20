@@ -48,7 +48,7 @@ def cif(cif, strict=True):
     else:
         d = 0
     
-    if controlCode != d and letters2[d] != controlCode:
+    if controlCode != str(d) and letters2[d-1] != controlCode:
         return False
     
     return True
@@ -131,7 +131,7 @@ def ssn(ssn, strict=True):
     if (int(b) < 10000000):
         d = int(b) + (int(a) * 10000000)
     else:
-        d = a + b.replace("/0*$/", "")
+        d = a + b.replace("0*$", "")
     
     c = int(d) % 97
     
