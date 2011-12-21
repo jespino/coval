@@ -1,5 +1,5 @@
 import unittest
-from codval.international import *
+from coval.international import *
 
 class CodeValidatorFinanceTestCase(unittest.TestCase):
 
